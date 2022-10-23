@@ -79,3 +79,22 @@ export function createURL(endpoint, params = {}, auth = true) {
 
   return url.toString();
 }
+
+export function createNoEncodeURL(endpoint, params = {}, auth = true) {
+  let prefix = baseURL;
+  if (!prefix.endsWith("/")) {
+    prefix = prefix + "/";
+  }
+  const url = new URL(prefix + endpoint, origin);
+
+  const searchParams = {
+    ...(auth && { auth: store.state.jwt }),
+    ...params,
+  };
+
+  for (const key in searchParams) {
+    url.searchParams.set(key, searchParams[key]);
+  }
+
+  return url.toString();
+}

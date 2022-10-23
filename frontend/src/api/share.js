@@ -1,4 +1,4 @@
-import { fetchURL, fetchJSON, removePrefix, createURL } from "./utils";
+import { fetchURL, fetchJSON, removePrefix, createURL, createNoEncodeURL } from "./utils";
 
 export async function list() {
   return fetchJSON("/api/shares");
@@ -37,5 +37,5 @@ export function getShareURL(share) {
 
 
 export function getDirectURL(localpath) {
-  return createURL("api/raw" + localpath, {}, false);
+  return createNoEncodeURL("api/raw" + localpath, {}, false);
 }
