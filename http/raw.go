@@ -44,11 +44,13 @@ func parseQueryFiles(r *http.Request, f *files.FileInfo, _ *users.User) ([]strin
 	return fileSlice, nil
 }
 
-//nolint: goconst
+// nolint: goconst
 func parseQueryAlgorithm(r *http.Request) (string, archiver.Writer, error) {
 	// TODO: use enum
 	switch r.URL.Query().Get("algo") {
-	case "zip", "true", "":
+	case "":
+		return "", nil, errors.New("please point the folder download format, like 'algo=targz'")
+	case "zip", "true":
 		return ".zip", archiver.NewZip(), nil
 	case "tar":
 		return ".tar", archiver.NewTar(), nil
@@ -76,7 +78,7 @@ func setContentDisposition(w http.ResponseWriter, r *http.Request, file *files.F
 	}
 }
 
-var rawHandler = withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
+var rawHandler = withUserRaw(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
 	if !d.user.Perm.Download {
 		return http.StatusAccepted, nil
 	}
@@ -101,8 +103,13 @@ var rawHandler = withUser(func(w http.ResponseWriter, r *http.Request, d *data) 
 	if !file.IsDir {
 		return rawFileHandler(w, r, file)
 	}
+	//add by weiqi, 避免 非法绕过权限 下载文件夹
+	if strings.HasSuffix((*(*r).URL).Path, "/") {
+		return rawDirHandler(w, r, d, file)
+	} else {
+		return http.StatusDirectDlDirError, errors.New("Direct download dir not allowed by luya")
+	}
 
-	return rawDirHandler(w, r, d, file)
 })
 
 func addFile(ar archiver.Writer, d *data, path, commonPath string) error {
@@ -166,7 +173,7 @@ func rawDirHandler(w http.ResponseWriter, r *http.Request, d *data, file *files.
 
 	extension, ar, err := parseQueryAlgorithm(r)
 	if err != nil {
-		return http.StatusInternalServerError, err
+		return http.StatusAlgoError, err
 	}
 
 	err = ar.Create(w)

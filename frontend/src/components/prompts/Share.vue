@@ -91,6 +91,11 @@
           type="password"
           v-model.trim="password"
         />
+
+        <p>{{ $t("LINK") }}</p>
+        <span>{{ buildDirectLink(this.url) }}</span>
+       
+     
       </div>
 
       <div class="card-action">
@@ -214,6 +219,14 @@ export default {
     },
     buildLink(share) {
       return api.getShareURL(share);
+    },
+    buildDirectLink(localpath) {
+      console.log(localpath)
+      let lpath = localpath
+      if(localpath.startsWith("/files/")) {
+        lpath = localpath.replace('/files','')
+      }
+      return api.getDirectURL(lpath);
     },
     sort() {
       this.links = this.links.sort((a, b) => {

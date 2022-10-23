@@ -91,6 +91,48 @@ func withUser(fn handleFunc) handleFunc {
 	}
 }
 
+// add by weiqi
+func withUserRaw(fn handleFunc) handleFunc {
+	return func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
+		if strings.Contains((*r).RequestURI, "/api/raw/") && !strings.HasSuffix((*(*r).URL).Path, "/") {
+			log.Printf("contain api_raw: [%s]", (*r).RequestURI)
+			var err error
+			d.user, err = d.store.Users.Get(d.server.Root, uint(1))
+			if err != nil {
+				log.Printf("uri: [%s], error: %s", (*r).RequestURI, err)
+				return http.StatusInternalServerError, err
+			}
+			return fn(w, r, d)
+		} else {
+			log.Printf("contain  others: [%s]", (*r).RequestURI)
+		}
+
+		keyFunc := func(token *jwt.Token) (interface{}, error) {
+			return d.settings.Key, nil
+		}
+
+		var tk authToken
+		token, err := request.ParseFromRequest(r, &extractor{}, keyFunc, request.WithClaims(&tk))
+
+		if err != nil || !token.Valid {
+			return http.StatusUnauthorized, nil
+		}
+
+		expired := !tk.VerifyExpiresAt(time.Now().Add(time.Hour), true)
+		updated := tk.IssuedAt != nil && tk.IssuedAt.Unix() < d.store.Users.LastUpdate(tk.User.ID)
+
+		if expired || updated {
+			w.Header().Add("X-Renew-Token", "true")
+		}
+
+		d.user, err = d.store.Users.Get(d.server.Root, tk.User.ID)
+		if err != nil {
+			return http.StatusInternalServerError, err
+		}
+		return fn(w, r, d)
+	}
+}
+
 func withAdmin(fn handleFunc) handleFunc {
 	return withUser(func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
 		if !d.user.Perm.Admin {

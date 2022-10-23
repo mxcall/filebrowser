@@ -1,33 +1,69 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/filebrowser/logo/master/banner.png" width="550"/>
-</p>
+## 文档
+[https://github.com/filebrowser/filebrowser](https://github.com/filebrowser/filebrowser)
 
-![Preview](https://user-images.githubusercontent.com/5447088/50716739-ebd26700-107a-11e9-9817-14230c53efd2.gif)
+[https://filebrowser.org/contributing](https://filebrowser.org/contributing)
 
-[![Build](https://github.com/filebrowser/filebrowser/actions/workflows/main.yaml/badge.svg)](https://github.com/filebrowser/filebrowser/actions/workflows/main.yaml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/filebrowser/filebrowser?style=flat-square)](https://goreportcard.com/report/github.com/filebrowser/filebrowser)
-[![Documentation](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](http://godoc.org/github.com/filebrowser/filebrowser)
-[![Version](https://img.shields.io/github/release/filebrowser/filebrowser.svg?style=flat-square)](https://github.com/filebrowser/filebrowser/releases/latest)
-[![Chat IRC](https://img.shields.io/badge/freenode-%23filebrowser-blue.svg?style=flat-square)](http://webchat.freenode.net/?channels=%23filebrowser)
 
-filebrowser provides a file managing interface within a specified directory and it can be used to upload, delete, preview, rename and edit your files. It allows the creation of multiple users and each user can have its own directory. It can be used as a standalone app.
+## 运行
+> 命令
 
-## Features
+./filebrowser --address 0.0.0.0 --port 18080 --log '/usr/local/filebrowser/run.log' --root  /volume3/biz/01_tmp_shorttime/
 
-Please refer to our docs at [https://filebrowser.org/features](https://filebrowser.org/features)
+> 请求写法
+```
+// 下载文件-旧写法
+http://127.0.0.1:8080/api/raw/03_doc/docker_practice.pdf?auth=eyJhbGciOiJIUxxx&
+// 下载文件-新写法
+http://127.0.0.1:8080/api/raw/03_doc/docker_practice.pdf
+// 下载目录-旧写法
+http://127.0.0.1:8080/api/raw/boltBrowser_v2.4_win/?algo=targz&auth=eyJhbGcixxx&
+// 下载目录-新写法 
+//(若不加algo, 会提示报错, 避免误下载超大文件夹!!!)
+//(安全起见不能给匿名用户开放下载目录的权限, 所以下载文件夹还需要登录!!!)
+//http://127.0.0.1:8080/api/raw/boltBrowser_v2.4_win/?algo=targz
 
-## Install
+```
 
-For installation instructions please refer to our docs at [https://filebrowser.org/installation](https://filebrowser.org/installation).
 
-## Configuration
+## 编译
+> Go环境变量设置
+```
+GO111MODULE=on
+GOPATH=D:\04_workspace\1work_go
+GOPROXY=https://goproxy.cn
+PATH 添加 D:\01_env\go\bin
+     添加 D:\04_workspace\1work_go\bin
+```
 
-[Authentication Method](https://filebrowser.org/configuration/authentication-method) - You can change the way the user authenticates with the filebrowser server
+> 前端
+```
+# From the root of the repo, go to frontend/
+cd frontend
+# Install the dependencies
+npm install
+# Build the frontend
+npm run build
+#npm run watch
+```
 
-[Command Runner](https://filebrowser.org/configuration/command-runner) - The command runner is a feature that enables you to execute any shell command you want before or after a certain event.
+> 后端
+```
+# 默认包(自动关联平台)
+go mod download
+go build
 
-[Custom Branding](https://filebrowser.org/configuration/custom-branding) - You can customize your File Browser installation by change its name to any other you want, by adding a global custom style sheet and by using your own logotype if you want.
+## 编译window下运行软件
+SET CGO_ENABLED=1
+SET GOOS=windows
+SET GOARCH=amd64
+go build
 
-## Contributing
+## 编译 linux 下运行软件
+SET CGO_ENABLED=0
+SET GOOS=linux
+SET GOARCH=amd64
+go build
 
-If you're interested in contributing to this project, our docs are best places to start [https://filebrowser.org/contributing](https://filebrowser.org/contributing).
+
+```
+
