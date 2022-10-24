@@ -11,6 +11,10 @@
 
 > 请求写法
 ```
+// 分享文件写法, 系统webui默认写法
+http://127.0.0.1:8080/api/public/dl/{分享码}
+// 分享文件写法, 方便下载自动命名, curl -O "http://xx"
+http://127.0.0.1:8080/api/public/dl/{分享码}/{文件名}
 // 下载文件-旧写法
 http://127.0.0.1:8080/api/raw/03_doc/docker_practice.pdf?auth=eyJhbGciOiJIUxxx&
 // 下载文件-新写法
@@ -21,6 +25,7 @@ http://127.0.0.1:8080/api/raw/boltBrowser_v2.4_win/?algo=targz&auth=eyJhbGcixxx&
 //(若不加algo, 会提示报错, 避免误下载超大文件夹!!!)
 //(安全起见不能给匿名用户开放下载目录的权限, 所以下载文件夹还需要登录!!!)
 //http://127.0.0.1:8080/api/raw/boltBrowser_v2.4_win/?algo=targz
+
 
 ```
 
