@@ -2,9 +2,11 @@
 
 # Except this file
 !.gitignore
+fb_frontend/*
 filebrowser
 filebrowser.exe
 run.log
 filebrowser.db
 *.zip
 *.rar
+
