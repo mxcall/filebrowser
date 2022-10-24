@@ -67,3 +67,9 @@ go build
 
 ```
 
+## 调试
+request相关变量值
+```
+(*(*r).URL).Path="/_release/README.md"
+(*r).RequestURI="/api/raw/_release/README.md?auth=eyJhbGcxxx&abc=111"
+```

@@ -94,7 +94,7 @@ func withUser(fn handleFunc) handleFunc {
 // add by weiqi
 func withUserRaw(fn handleFunc) handleFunc {
 	return func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
-		if strings.Contains((*r).RequestURI, "/api/raw/") && !strings.HasSuffix((*(*r).URL).Path, "/") {
+		if strings.Contains((*r).RequestURI, "/api/raw/_") && !strings.HasSuffix((*(*r).URL).Path, "/") {
 			log.Printf("contain api_raw: [%s]", (*r).RequestURI)
 			var err error
 			d.user, err = d.store.Users.Get(d.server.Root, uint(1))
