@@ -1,4 +1,4 @@
-import { fetchURL, removePrefix, createURL } from "./utils";
+import { fetchURL, removePrefix, createURL, createNoEncodeURL } from "./utils";
 import { baseURL } from "@/utils/constants";
 
 export async function fetch(url, password = "") {
@@ -67,4 +67,13 @@ export function getDownloadURL(share, inline = false) {
   };
 
   return createURL("api/public/dl/" + share.hash + share.path, params, false);
+}
+
+export function getDownloadURLWithName(share, inline = false, filename) {
+  const params = {
+    ...(inline && { inline: "true" }),
+    ...(share.token && { token: share.token }),
+  };
+
+  return createNoEncodeURL("api/public/dl/" + share.hash + share.path+'/'+filename, params, false);
 }

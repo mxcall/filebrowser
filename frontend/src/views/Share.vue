@@ -230,10 +230,12 @@ export default {
       return "insert_drive_file";
     },
     link: function () {
-      return api.getDownloadURL(this.req);
+      //console.log(this.req.name)
+      return api.getDownloadURLWithName(this.req, false, this.req.name); //luya
     },
     inlineLink: function () {
-      return api.getDownloadURL(this.req, true);
+      //console.log(this.req.name)
+      return api.getDownloadURLWithName(this.req, true, this.req.name);
     },
     humanSize: function () {
       if (this.req.isDir) {
