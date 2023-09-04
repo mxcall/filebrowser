@@ -94,7 +94,15 @@ func withUser(fn handleFunc) handleFunc {
 // add by weiqi
 func withUserRaw(fn handleFunc) handleFunc {
 	return func(w http.ResponseWriter, r *http.Request, d *data) (int, error) {
-		if strings.Contains((*r).RequestURI, "/api/raw/_") && !strings.HasSuffix((*(*r).URL).Path, "/") {
+		filePath := (*r).RequestURI
+		// 获取最后一个斜杠的索引位置
+		lastSlashIndex := strings.LastIndex(filePath, "/")
+		// 获取父路径
+		parentPath := filePath[:lastSlashIndex]
+		// 获取父文件夹名称
+		parentDir := parentPath[strings.LastIndex(parentPath, "/")+1:]
+		//if strings.Contains((*r).RequestURI, "/api/raw/_") && !strings.HasSuffix((*(*r).URL).Path, "/") {
+		if strings.HasPrefix(parentDir, "_") && !strings.HasSuffix((*(*r).URL).Path, "/") {
 			log.Printf("contain api_raw: [%s]", (*r).RequestURI)
 			var err error
 			d.user, err = d.store.Users.Get(d.server.Root, uint(1))

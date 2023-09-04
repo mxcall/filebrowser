@@ -17,7 +17,7 @@ http://127.0.0.1:8080/api/public/dl/{分享码}
 http://127.0.0.1:8080/api/public/dl/{分享码}/{文件名}
 // 下载文件-旧写法
 http://127.0.0.1:8080/api/raw/03_doc/docker_practice.pdf?auth=eyJhbGciOiJIUxxx&
-// 下载文件-新写法
+// 下载文件-新写法(文件直接上级有下划线才行)
 http://127.0.0.1:8080/api/raw/03_doc/docker_practice.pdf
 // 下载目录-旧写法
 http://127.0.0.1:8080/api/raw/boltBrowser_v2.4_win/?algo=targz&auth=eyJhbGcixxx&
